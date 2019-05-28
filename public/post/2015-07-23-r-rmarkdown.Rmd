@@ -1,18 +1,18 @@
 ---
-title: "Hello World"
-author: "Will Hanley"
-date: 2019-05-28T21:13:14-05:00
+title: "Hello R Markdown"
+author: "Frida Gomam"
+date: 2015-07-23T21:13:14-05:00
 categories: ["R"]
-tags: ["corpus description", "plot"]
+tags: ["R Markdown", "plot", "regression"]
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE)
 ```
 
-# International Law Corpus
+# R Markdown
 
-The international law corpus at present includes three journals. 
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 You can embed an R code chunk like this:
 
