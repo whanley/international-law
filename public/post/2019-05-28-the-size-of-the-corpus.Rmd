@@ -1,0 +1,10 @@
+---
+title: The Size of the Corpus
+author: Will Hanley
+date: '2019-05-28'
+slug: the-size-of-the-corpus
+categories: []
+tags:
+  - word count
+keywords: ~
+---

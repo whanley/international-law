@@ -1,0 +1,4 @@
+theme = "hugo-primer"
+baseURL = "https://whanley.github.io/international-law/"
+languageCode = "en-us"
+title = "International Law Corpus"
