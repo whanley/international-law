@@ -3,7 +3,7 @@ title: "The Journals of International Law"
 author: "Will Hanley"
 date: 2019-05-28
 categories: ["R"]
-tags: ["R Markdown", "plot", "regression"]
+tags: ["journals", "plot", "publishing"]
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(collapse = TRUE)
 
 # International legal history
 
-This is a project about international law's history
+This is a project about international law's history.
 
 You can embed an R code chunk like this:
 
