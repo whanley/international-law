@@ -1,4 +1,4 @@
 theme = "hugo-primer"
-baseURL = "https://whanley.github.io/international-law/"
+baseURL = "https://ilcorpus.netlify.com/"
 languageCode = "en-us"
 title = "International Law Corpus"
