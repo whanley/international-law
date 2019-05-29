@@ -14,6 +14,72 @@ knitr::opts_chunk$set(collapse = TRUE)
 This is a project about international law's history.
 
 
+```{r underlying, include=FALSE}
+library(xml2)
+
+bslc_files <- dir("~/GitHub/ilcorpus/journals/bslc/bslc-issues", full.names = TRUE)
+bslc_text <- c()
+for (f in bslc_files) {
+  bslc_text <- c(bslc_text, gsub("\\s+", " ", paste(xml_text(xml_find_all(read_xml(f), "//text()")), collapse=" ")))
+}
+
+clunet_files <- dir("~/GitHub/ilcorpus/journals/clunet/clunet-issues", full.names = TRUE)
+clunet_text <- c()
+for (f in clunet_files) {
+  clunet_text <- c(clunet_text, gsub("\\s+", " ", paste(xml_text(xml_find_all(read_xml(f), "//text()")), collapse=" ")))
+}
+
+rdilc_files <- dir("~/GitHub/ilcorpus/journals/rdilc/rdilc-issues", full.names = TRUE)
+rdilc_text <- c()
+for (f in rdilc_files) {
+  rdilc_text <- c(rdilc_text, gsub("\\s+", " ", paste(xml_text(xml_find_all(read_xml(f), "//text()")), collapse=" ")))
+}
+
+library(tokenizers)
+
+clunet_words <- tokenize_words(clunet_text)
+sapply(clunet_words, length)
+bslc_words <- tokenize_words(bslc_text)
+sapply(bslc_words, length)
+rdilc_words <- tokenize_words(rdilc_text)
+sapply(rdilc_words, length)
+
+library(tidyverse)
+
+bslc_metadata <- read_csv("~/GitHub/ilcorpus/journals/bslc/bslc-summary.csv")
+clunet_metadata <- read_csv("~/GitHub/ilcorpus/journals/clunet/clunet-summary.csv")
+rdilc_metadata <- read_csv("~/GitHub/ilcorpus/journals/rdilc/rdilc-summary.csv")
+
+bslc_word_count <- tibble(year = bslc_metadata$year, words = sapply(bslc_words, length), journal = "bslc")
+clunet_word_count <- tibble(year = clunet_metadata$year, words = sapply(clunet_words, length), journal = "clunet")
+rdilc_word_count <- tibble(year = rdilc_metadata$year, words = sapply(rdilc_words, length), journal = "clunet")
+
+clunet_word_count_year <- clunet_word_count %>% 
+  group_by(year) %>% 
+  summarise(words = sum(words), journal = "clunet")
+bslc_word_count_year <- bslc_word_count %>% 
+  group_by(year) %>% 
+  summarise(words = sum(words), journal = "bslc")
+rdilc_word_count_year <- rdilc_word_count %>% 
+  group_by(year) %>% 
+  summarise(words = sum(words), journal = "rdilc")
+
+journals_count <- full_join(clunet_word_count_year, bslc_word_count_year)
+journals_count <- full_join(journals_count, rdilc_word_count_year)
+```
+
+Plot the results as points and smoothing line
+```{r plot}
+p <- ggplot(data = journals_count, mapping = aes(x = year, y = words, color = journal))
+p + geom_point() + geom_smooth()
+```
+
+Plot the results as a streamgraph:
+```{r streamgraph}
+library(streamgraph)
+streamgraph(journals_count, key="journal", value="words", date="year", offset="zero") 
+```
+
 ## Underlying code
 
 These code blocks repeat the same steps for each of three journals. It might be good to figure out how to do all three in one step.
@@ -89,13 +155,14 @@ journals_count <- full_join(journals_count, rdilc_word_count_year)
 ```
 
 Plot the results as points and smoothing line
-```{r plot}
+```{r plot code}
 p <- ggplot(data = journals_count, mapping = aes(x = year, y = words, color = journal))
 p + geom_point() + geom_smooth()
 ```
 
 Plot the results as a streamgraph:
-```{r streamgraph}
+```{r streamgraph code}
 library(streamgraph)
 streamgraph(journals_count, key="journal", value="words", date="year", offset="zero") 
 ```
+
