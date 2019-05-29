@@ -10,8 +10,6 @@ tags: ["journals", "plot", "publishing"]
 knitr::opts_chunk$set(collapse = TRUE)
 ```
 
-# International legal history
-
 This is a project about international law's history.
 
 You can embed an R code chunk like this:
