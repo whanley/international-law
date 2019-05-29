@@ -1,18 +1,15 @@
 ---
-title: "Hello R Markdown"
-author: "Frida Gomam"
+title: "Functioning dummy post with plot"
+description: "Content not imporant."
 date: 2015-07-23T21:13:14-05:00
-categories: ["R"]
-tags: ["R Markdown", "plot", "regression"]
+tags: ["dummy", "plot"]
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE)
 ```
 
-# International legal history
 
-This is a project about international law's history
 
 You can embed an R code chunk like this:
 
