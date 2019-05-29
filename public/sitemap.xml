@@ -71,15 +71,4 @@
     <priority>0</priority>
   </url>
   
-  <url>
-    <loc>/posts/2015-07-23-r-rmarkdown/</loc>
-    <lastmod>2015-07-23T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/dummy/</loc>
-    <lastmod>2015-07-23T21:13:14-05:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
 </urlset>
