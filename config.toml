@@ -1,4 +1,40 @@
-theme = "hugo-primer"
+theme = "ezhil"
 baseURL = "https://ilcorpus.netlify.com/"
 languageCode = "en-us"
 title = "International Law Corpus"
+
+pygmentsstyle = "vs"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
+
+[params]
+	subtitle = "Visualizations of international law periodical content, 1869-1939."
+	# Number of posts to show in recent posts list.
+	recentPostsCount = 10
+	# Content types which are excluded from recent posts and archive page.
+	excludedTypes = ["page"]
+	disableDisqusTypes = ["page"]
+	featherIconsCDN = true
+
+  [[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 1
+
+  [[menu.main]]
+  name = "All posts"
+  url = "/posts"
+  weight = 2
+
+  [[menu.main]]
+  name = "About"
+  url = "/about"
+  weight = 3
+
+  [[menu.main]]
+  name = "Tags"
+  url = "/tags"
+  weight = 4
+
+[taxonomies]
+   tag = "tags"
