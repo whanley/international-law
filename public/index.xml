@@ -21,6 +21,18 @@
     </item>
     
     <item>
+      <title>Journal word counts over time</title>
+      <link>/posts/2019-05-28-journals/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2019-05-28-journals/</guid>
+      <description>This is a project about international law’s history.
+Underlying code These code blocks repeat the same steps for each of three journals. It might be good to figure out how to do all three in one step.
+First, load text of all files
+library(xml2) bslc_files &amp;lt;- dir(&amp;quot;~/GitHub/ilcorpus/journals/bslc/bslc-issues&amp;quot;, full.names = TRUE) bslc_text &amp;lt;- c() for (f in bslc_files) { bslc_text &amp;lt;- c(bslc_text, gsub(&amp;quot;\\s+&amp;quot;, &amp;quot; &amp;quot;, paste(xml_text(xml_find_all(read_xml(f), &amp;quot;//text()&amp;quot;)), collapse=&amp;quot; &amp;quot;))) } clunet_files &amp;lt;- dir(&amp;quot;~/GitHub/ilcorpus/journals/clunet/clunet-issues&amp;quot;, full.</description>
+    </item>
+    
+    <item>
       <title>Foreign Members of the Société de Législation Comparée, 1878-1918</title>
       <link>/posts/foreign-members-bslc/</link>
       <pubDate>Wed, 25 Jul 2018 00:00:00 +0000</pubDate>
