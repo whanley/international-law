@@ -1,6 +1,6 @@
 ---
 title: "Functioning dummy post with plot"
-description: "Content not imporant."
+author: "no one"
 date: 2015-07-23T21:13:14-05:00
 tags: ["dummy", "plot"]
 ---
