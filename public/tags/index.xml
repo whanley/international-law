@@ -12,11 +12,20 @@
     
     
     <item>
-      <title>journals</title>
-      <link>/tags/journals/</link>
+      <title>bslc</title>
+      <link>/tags/bslc/</link>
       <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/journals/</guid>
+      <guid>/tags/bslc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>clunet</title>
+      <link>/tags/clunet/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/clunet/</guid>
       <description></description>
     </item>
     
@@ -35,6 +44,24 @@
       <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/publishing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rdilc</title>
+      <link>/tags/rdilc/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/rdilc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>word count</title>
+      <link>/tags/word-count/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/word-count/</guid>
       <description></description>
     </item>
     

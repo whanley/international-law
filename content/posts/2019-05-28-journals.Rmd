@@ -2,17 +2,14 @@
 title: "Journal word counts over time"
 author: "Will Hanley"
 date: 2019-05-28
-tags: [journals, plot, publishing]
-description: "Total word count is a good way to measure journal size. How do the different
+tags: [clunet, rdilc, bslc, plot, publishing, word count]
+description: "Total word count is a good way to measure journal size. How do three different
   journals compare over time?"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE)
 ```
-
-This is a project about international law's history.
-
 
 ```{r underlying, include=FALSE}
 library(xml2)
@@ -68,24 +65,32 @@ journals_count <- full_join(clunet_word_count_year, bslc_word_count_year)
 journals_count <- full_join(journals_count, rdilc_word_count_year)
 ```
 
-Plot the results as points and smoothing line
-```{r plot}
-p <- ggplot(data = journals_count, mapping = aes(x = year, y = words, color = journal))
-p + geom_point() + geom_smooth()
-```
-
-Plot the results as a streamgraph:
-```{r streamgraph}
+The sixty million words in the first version of the international law corpus are distributed over time like this:
+```{r streamgraph, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
 library(streamgraph)
 streamgraph(journals_count, key="journal", value="words", date="year", offset="zero") 
 ```
+
+This graph distinguishes between three journals: the _Journal du droit international privé et de la jurisprudence comparée_ ("clunet", in yellow), the _Bulletin de la Société de législation comparée_ ("bslc", in orange), and the _Revue de droit international et de législation comparée_ ("rdilc", in green). 
+
+It shows a steady rise in overall publishing volume until the 1890s. From the beginning of the 1890s to the end of the 1920s, the total word count of these three journals typically hovered around one million per year. The influence of World War One is marked: the RDILC stopped publication altogether, while Clunet produced its largest volume in 1917. After 1930, overall word volume wanes.
+
+This chart, which does not show a combined word count for the three journals, shows that the rise and fall in Clunet's volume is largely responsible for the overall shape of the first graph.
+```{r plot, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+p <- ggplot(data = journals_count, mapping = aes(x = year, y = words, color = journal))
+p + geom_point() + 
+  geom_smooth() +
+  labs(x = "Year", y = "Words", title = "Annual Word Count of Three International Law Journals", caption = "Will Hanley, ILCorpus")
+```
+
+Individual points represent the total words of each year, while the smoothing line indicates trajectory.
 
 ## Underlying code
 
 These code blocks repeat the same steps for each of three journals. It might be good to figure out how to do all three in one step.
 
 First, load text of all files
-```{r load text}
+```{r load text, eval=FALSE}
 library(xml2)
 
 bslc_files <- dir("~/GitHub/ilcorpus/journals/bslc/bslc-issues", full.names = TRUE)
@@ -108,7 +113,7 @@ for (f in rdilc_files) {
 ```
 
 Tokenize the words, then count them:
-```{r tokenize, results='hide'}
+```{r tokenize, results='hide', eval=FALSE}
 library(tokenizers)
 
 clunet_words <- tokenize_words(clunet_text)
@@ -120,7 +125,7 @@ sapply(rdilc_words, length)
 ```
 
 I prepared separate metadata summaries about each journal, drawing year and date from the TEI header of each file. These summaries will probably be useful in future steps. For now, get and use date metadata about every issue:
-```{r metadata, message=FALSE}
+```{r metadata, message=FALSE, eval=FALSE}
 library(tidyverse)
 
 bslc_metadata <- read_csv("~/GitHub/ilcorpus/journals/bslc/bslc-summary.csv")
@@ -129,14 +134,14 @@ rdilc_metadata <- read_csv("~/GitHub/ilcorpus/journals/rdilc/rdilc-summary.csv")
 ```
 
 Now, produce a tibble for each journal, with each issue (there was more than one per year) its own observation. This tibble lists the issue, word count, and abbreviated title of the journal.
-```{r tibbles}
+```{r tibbles, eval=FALSE}
 bslc_word_count <- tibble(year = bslc_metadata$year, words = sapply(bslc_words, length), journal = "bslc")
 clunet_word_count <- tibble(year = clunet_metadata$year, words = sapply(clunet_words, length), journal = "clunet")
 rdilc_word_count <- tibble(year = rdilc_metadata$year, words = sapply(rdilc_words, length), journal = "clunet")
 ```
 
 Now cluster word counts by year:
-```{r cluster by year}
+```{r cluster by year, eval=FALSE}
 clunet_word_count_year <- clunet_word_count %>% 
   group_by(year) %>% 
   summarise(words = sum(words), journal = "clunet")
@@ -149,19 +154,19 @@ rdilc_word_count_year <- rdilc_word_count %>%
 ```
 
 Put all three journals in a single tibble:
-```{r single tibble, message=FALSE}
+```{r single tibble, eval=FALSE, message=FALSE}
 journals_count <- full_join(clunet_word_count_year, bslc_word_count_year)
 journals_count <- full_join(journals_count, rdilc_word_count_year)
 ```
 
 Plot the results as points and smoothing line
-```{r plot code}
+```{r plot code, eval=FALSE}
 p <- ggplot(data = journals_count, mapping = aes(x = year, y = words, color = journal))
 p + geom_point() + geom_smooth()
 ```
 
 Plot the results as a streamgraph:
-```{r streamgraph code}
+```{r streamgraph code, eval=FALSE}
 library(streamgraph)
 streamgraph(journals_count, key="journal", value="words", date="year", offset="zero") 
 ```
