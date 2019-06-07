@@ -1,0 +1,115 @@
+---
+title: "Counting states in jurisprudence reports"
+author: "Will Hanley"
+date: 2019-06-06
+tags: [clunet, jurisprudence, word count, states]
+description: "Which states were most prominent in Clunet's jurisprudence reporting?"
+---
+
+
+
+<p>The “Jurisprudence” section of Clunet contains thousands of “bulletins” reporting decisions. The section is subdivided by state. This scatterplot captures the number of bulletins for each state and their average length.</p>
+<p>Number of bulletins is one proxy for the notability of a state. Of course, not all of these states were present throughout the sixty-five year period. I’ll break out time series in future graphs.</p>
+<p>Length of bulletin is one proxy for the depth of engagement with jurisprudence. At present this measure slightly misrepresents the jurisprudence bulletins, however. Many bulletins contained more than one report, but I have not yet managed to subdivide this section of the journal.</p>
+<p><img src="/posts/jurisprudence_files/figure-html/all-states-1.png" width="672" /></p>
+<p>This plot shows only those states with more than five jurisprudence bulletins. Clearly France is an outlier both in terms of count and length. A relatively compact group of nine states comes next in prominence.</p>
+<p><img src="/posts/jurisprudence_files/figure-html/more-than-five-1.png" width="672" /></p>
+<p>Among non-European states, Egypt is most prominent. Brazil and the “Échelles du Levant” (non-Ottoman Mediterranean ports subject to the capitulations) come next. A cluster of French colonies stands out, and Latin American states are relatively numerous. Asian states are remarkable for their slight presence.</p>
+<p><img src="/posts/jurisprudence_files/figure-html/non-europe-1.png" width="672" /></p>
+<div id="underlying-code" class="section level2">
+<h2>Underlying code</h2>
+<pre class="r"><code>library(tidyverse)
+library(tokenizers)
+library(ggplot2)
+library(socviz)
+library(ggrepel)
+
+#load folder of files
+clunet_files &lt;- dir(&quot;~/GitHub/ilcorpus/journals/clunet/clunet-issues&quot;, full.names = TRUE)
+
+# function to extract word count and metadata for divs within jurisprudence
+extract_state_data &lt;- function(x){
+  # read file
+  file &lt;- read_xml(x)
+  # extract divs
+  divs &lt;- file %&gt;% xml_find_all(&quot;.//d1:div[@feature=&#39;jurisprudence&#39;]/d1:div&quot;)
+  # get state attribute 
+  state_code &lt;- divs %&gt;% xml_attr(&quot;state&quot;)
+  filename &lt;- x %&gt;% gsub(&quot;.+/GitHub/ilcorpus/journals/[a-z]+/[a-z,-]+/&quot;, &quot;&quot;, .) %&gt;% gsub(&quot;.xml&quot;, &quot;&quot;, .)
+  year &lt;- x %&gt;% gsub(&quot;.+/GitHub/ilcorpus/journals/[a-z]+/[a-z,-]+/[a-z]+-&quot;, &quot;&quot;, .) %&gt;% gsub(&quot;-..xml&quot;, &quot;&quot;, .)
+  
+  #find the head and word count for each div
+  #returns a list of data frames
+  output &lt;- lapply(divs, function(d){
+    header &lt;- d %&gt;% 
+      xml_find_first(&quot;.//d1:head&quot;) %&gt;% 
+      xml_text() %&gt;% 
+      paste(collapse=&quot; &quot;) %&gt;% 
+      gsub(&quot;\\s+&quot;, &quot; &quot;, .)
+    text &lt;- d %&gt;% 
+      xml_find_all(&quot;.//d1:p&quot;) %&gt;% 
+      xml_text() %&gt;% 
+      paste(collapse=&quot; &quot;) %&gt;% 
+      gsub(&quot;\\s+&quot;, &quot; &quot;, .)
+    count &lt;- length(tokenize_words(text)[[1]])
+    tibble(head=header, count)
+  })
+  #bind everything up into a tibble.
+  answer &lt;- do.call(rbind, output)
+  test_tibble &lt;- cbind(tibble(filename = filename, year = as.numeric(year), state_code = state_code), answer)
+}
+
+# run function and make tibble
+clunet_states &lt;- lapply(clunet_files, extract_state_data)
+one_list &lt;- do.call(rbind, clunet_states)
+clunet_states_tibble &lt;- as_tibble(one_list, .name_repair = &quot;minimal&quot;)
+
+# load state names file
+state_names &lt;- read_tsv(&quot;~/GitHub/ilcorpus/codes/state-codes.tsv&quot;)
+
+# get mean word count and count of reports, join with state names
+clunet_states_sum &lt;- clunet_states_tibble %&gt;% 
+  group_by(state_code) %&gt;% 
+  summarise(words = mean(count), reports = n()) %&gt;% 
+  left_join(state_names)
+
+# all-states scatterplot
+p &lt;- ggplot(data = clunet_states_sum, mapping = aes(x = reports, y = words, label = state))
+p + geom_point() + 
+  geom_text_repel() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &quot;Number of Bulletins&quot;, 
+       title = &quot;Jurisprudence Reports by State in Clunet, 1874-1939&quot;, 
+       subtitle = &quot;Reckoned by frequency and length of report; logarithmic scale&quot;, 
+       y = &quot;Mean Word Count&quot;,
+       caption = &quot;Will Hanley, ILCorpus&quot;)
+
+# states with &gt;5 count scatterplot
+p1 &lt;- ggplot(data = (subset(clunet_states_sum, reports &gt; 5)), 
+             mapping = aes(x = reports, y = words, label = state))
+p1 + geom_point() + 
+  geom_text_repel() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &quot;Number of Bulletins&quot;, 
+       title = &quot;Jurisprudence Reports by State in Clunet, 1874-1939&quot;, 
+       subtitle = &quot;Reckoned by frequency and length of report; excluding states with fewer than five bulletins; logarithmic scale&quot;, 
+       y = &quot;Mean Word Count&quot;,
+       caption = &quot;Will Hanley, ILCorpus&quot;) +
+  annotate(geom = &quot;rect&quot;, xmin = 70, xmax = 275, 
+           ymin = 2300, ymax = 5000, fill = &quot;red&quot;, alpha = 0.2) +
+  annotate(geom = &quot;text&quot;, x = 80, y = 4200, label = &quot;The club of 9&quot;, hjust = 0)
+
+# non-European state scatterplot
+p2 &lt;- ggplot(data = subset(clunet_states_sum, region %nin% c(&quot;Europe&quot;, &quot;North America&quot;, &quot;International&quot;, &quot;NA&quot;)), mapping = aes(x = reports, y = words, label = state, color = region))
+p2 + geom_point() + 
+  geom_text_repel() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = &quot;Number of Bulletins&quot;, 
+       title = &quot;Jurisprudence Reports of non-European States in Clunet, 1874-1939&quot;, 
+       subtitle = &quot;Reckoned by frequency and mean length of report; logarithmic scale&quot;, 
+       y = &quot;Mean Word Count&quot;,
+       caption = &quot;Will Hanley, ILCorpus&quot;)</code></pre>
+</div>

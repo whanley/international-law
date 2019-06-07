@@ -6,10 +6,21 @@
     <description>Recent content in Posts on International Law Corpus</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 06 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Counting states in jurisprudence reports</title>
+      <link>/posts/jurisprudence/</link>
+      <pubDate>Thu, 06 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/jurisprudence/</guid>
+      <description>The “Jurisprudence” section of Clunet contains thousands of “bulletins” reporting decisions. The section is subdivided by state. This scatterplot captures the number of bulletins for each state and their average length.
+Number of bulletins is one proxy for the notability of a state. Of course, not all of these states were present throughout the sixty-five year period. I’ll break out time series in future graphs.
+Length of bulletin is one proxy for the depth of engagement with jurisprudence.</description>
+    </item>
     
     <item>
       <title>Journal word counts over time</title>
