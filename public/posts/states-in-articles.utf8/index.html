@@ -59,9 +59,13 @@
 		<div class="markdown">
 			
 
-<p>This chart counts references to selected states the standalone articles in Clunet. The pattern seems to differ from the <a href="https://ilcorpus.netlify.com/posts/jurisprudence/">pattern in jurisprudence</a>. Egypt is less prominent, while the Ottomans and Russia are more prominent.</p>
+<p>This chart counts references to selected states the standalone articles in Clunet. The pattern seems to differ from the <a href="https://ilcorpus.netlify.com/posts/jurisprudence/">pattern in jurisprudence</a>. Egypt is less prominent, while the Ottomans and Russia are more prominent. China, Greece, and Japan show a few outlying points, most produced by a single article focused on that state.</p>
 
 <p><img src="states-in-articles_files/figure-html/states-in-articles-1.png" width="672" /></p>
+
+<p>If we look at the pattern of occurence of the same words in the test of the jurisprudence bulletins themselves, we notice that the Ottoman empire and Turkey are less prominent. We also notice that here there are no spikes for China, Greece, and Japan.</p>
+
+<p><img src="states-in-articles_files/figure-html/states-in-bulletins-1.png" width="672" /></p>
 
 <h2 id="underlying-code">Underlying code</h2>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#00f">library</span>(xml2)
@@ -95,8 +99,6 @@ clunet_words &lt;- clunet_metadata %&gt;%
   inner_join(unnested_clunet_words)  %&gt;%
   select(year, type, feature, text)
 
-clunet_words
-
 <span style="color:#008000"># articles only</span>
 clunet_article_words &lt;- clunet_words %&gt;%
   filter(type == <span style="color:#a31515">&#34;article&#34;</span>) %&gt;%
@@ -106,14 +108,10 @@ clunet_article_words &lt;- clunet_words %&gt;%
   select(-type) %&gt;% 
   unnest() 
 
-clunet_article_words
-
 <span style="color:#008000"># single count per year</span>
 unique_clunet_article_words &lt;- clunet_article_words %&gt;% 
   add_count(words, year, sort = <span style="color:#00f">TRUE</span>) %&gt;% 
   distinct()
-
-unique_clunet_article_words
 
 <span style="color:#008000"># state by state breakdown</span>
 egypt &lt;- unique_clunet_article_words %&gt;% 
@@ -182,6 +180,90 @@ p + geom_point() + geom_smooth() +
   labs(x = <span style="color:#a31515">&#34;Year&#34;</span>, 
        title = <span style="color:#a31515">&#34;Selected state names in Clunet articles, 1874-1939&#34;</span>, 
        subtitle = <span style="color:#a31515">&#34;State names appear as nouns or adjectives in article body text&#34;</span>,
+       y = <span style="color:#a31515">&#34;Words per Year&#34;</span>,
+       caption = <span style="color:#a31515">&#34;Will Hanley, ILCorpus&#34;</span>)
+
+<span style="color:#008000"># same thing for bulletins</span>
+clunet_bulletin_words &lt;- clunet_words %&gt;%
+  filter(type == <span style="color:#a31515">&#34;bulletin&#34;</span>) %&gt;%
+  mutate(words = tokenize_words(text)) %&gt;% 
+  select(-text) %&gt;% 
+  select(-feature) %&gt;% 
+  select(-type) %&gt;% 
+  unnest() 
+
+<span style="color:#008000"># single count per year</span>
+unique_clunet_bulletin_words &lt;- clunet_bulletin_words %&gt;% 
+  add_count(words, year, sort = <span style="color:#00f">TRUE</span>) %&gt;% 
+  distinct()
+
+<span style="color:#008000"># state by state breakdown</span>
+egypt_b &lt;- unique_clunet_bulletin_words %&gt;% 
+  filter(<span style="color:#00f">grepl</span>(<span style="color:#a31515">&#34;.gypt.+&#34;</span>, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = <span style="color:#00f">sum</span>(n)) %&gt;% 
+  add_column(state = <span style="color:#a31515">&#34;Egypt&#34;</span>)
+belgium_b &lt;- unique_clunet_bulletin_words %&gt;% 
+  filter(<span style="color:#00f">grepl</span>(<span style="color:#a31515">&#34;belg.+&#34;</span>, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = <span style="color:#00f">sum</span>(n)) %&gt;% 
+  add_column(state = <span style="color:#a31515">&#34;Belgium&#34;</span>)
+switzerland_b &lt;- unique_clunet_bulletin_words %&gt;% 
+  filter(<span style="color:#00f">grepl</span>(<span style="color:#a31515">&#34;suis.+&#34;</span>, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = <span style="color:#00f">sum</span>(n)) %&gt;% 
+  add_column(state = <span style="color:#a31515">&#34;Switzerland&#34;</span>)
+china_b &lt;- unique_clunet_bulletin_words %&gt;% 
+  filter(<span style="color:#00f">grepl</span>(<span style="color:#a31515">&#34;chin.+&#34;</span>, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = <span style="color:#00f">sum</span>(n)) %&gt;% 
+  add_column(state = <span style="color:#a31515">&#34;China&#34;</span>)
+japan_b &lt;- unique_clunet_bulletin_words %&gt;% 
+  filter(<span style="color:#00f">grepl</span>(<span style="color:#a31515">&#34;japon.+&#34;</span>, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = <span style="color:#00f">sum</span>(n)) %&gt;% 
+  add_column(state = <span style="color:#a31515">&#34;Japan&#34;</span>)
+turkey_b &lt;- unique_clunet_bulletin_words %&gt;% 
+  filter(<span style="color:#00f">grepl</span>(<span style="color:#a31515">&#34;turq.+&#34;</span>, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = <span style="color:#00f">sum</span>(n)) %&gt;% 
+  add_column(state = <span style="color:#a31515">&#34;Turkey&#34;</span>)
+greece_b &lt;- unique_clunet_bulletin_words %&gt;% 
+  filter(<span style="color:#00f">grepl</span>(<span style="color:#a31515">&#34;grec.*&#34;</span>, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = <span style="color:#00f">sum</span>(n)) %&gt;% 
+  add_column(state = <span style="color:#a31515">&#34;Greece&#34;</span>)
+ottoman_b &lt;- unique_clunet_bulletin_words %&gt;% 
+  filter(<span style="color:#00f">grepl</span>(<span style="color:#a31515">&#34;otto.+&#34;</span>, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = <span style="color:#00f">sum</span>(n)) %&gt;% 
+  add_column(state = <span style="color:#a31515">&#34;Ottoman&#34;</span>)
+russia_b &lt;- unique_clunet_bulletin_words %&gt;% 
+  filter(<span style="color:#00f">grepl</span>(<span style="color:#a31515">&#34;russ.+&#34;</span>, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = <span style="color:#00f">sum</span>(n)) %&gt;% 
+  add_column(state = <span style="color:#a31515">&#34;Russia&#34;</span>)
+
+<span style="color:#008000"># make tibble</span>
+states_count_b &lt;- full_join(belgium_b, switzerland_b)
+states_count_b &lt;- full_join(egypt_b, states_count_b)
+states_count_b &lt;- full_join(china_b, states_count_b)
+states_count_b &lt;- full_join(japan_b, states_count_b)
+states_count_b &lt;- full_join(turkey_b, states_count_b)
+states_count_b &lt;- full_join(greece_b, states_count_b)
+states_count_b &lt;- full_join(ottoman_b, states_count_b)
+states_count_b &lt;- full_join(russia_b, states_count_b)
+states_count_b
+
+<span style="color:#008000"># make plot</span>
+p_b &lt;- ggplot(data = states_count_b, mapping = aes(x = year, y = count, color = state))
+p_b + geom_point() + geom_smooth() + 
+  facet_wrap(~state) +
+  scale_y_continuous() +
+  theme(legend.position=<span style="color:#a31515">&#34;none&#34;</span>) +
+  labs(x = <span style="color:#a31515">&#34;Year&#34;</span>, 
+       title = <span style="color:#a31515">&#34;Selected state names in Clunet jurisprudence bulletins, 1874-1939&#34;</span>, 
+       subtitle = <span style="color:#a31515">&#34;State names appear as nouns or adjectives in bulletin body text&#34;</span>,
        y = <span style="color:#a31515">&#34;Words per Year&#34;</span>,
        caption = <span style="color:#a31515">&#34;Will Hanley, ILCorpus&#34;</span>)</code></pre></div>
 		</div><div id="disqus_thread"></div>
