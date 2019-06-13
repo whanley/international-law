@@ -6,17 +6,44 @@
     <description>Recent content in Tags on International Law Corpus</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 13 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>articles</title>
+      <link>/tags/articles/</link>
+      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/articles/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>clunet</title>
       <link>/tags/clunet/</link>
-      <pubDate>Thu, 06 Jun 2019 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/clunet/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>states</title>
+      <link>/tags/states/</link>
+      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/states/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>word count</title>
+      <link>/tags/word-count/</link>
+      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/word-count/</guid>
       <description></description>
     </item>
     
@@ -26,24 +53,6 @@
       <pubDate>Thu, 06 Jun 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/jurisprudence/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>states</title>
-      <link>/tags/states/</link>
-      <pubDate>Thu, 06 Jun 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/states/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>word count</title>
-      <link>/tags/word-count/</link>
-      <pubDate>Thu, 06 Jun 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/word-count/</guid>
       <description></description>
     </item>
     

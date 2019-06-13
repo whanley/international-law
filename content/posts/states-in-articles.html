@@ -1,0 +1,135 @@
+---
+title: "States in Clunet articles"
+author: "Will Hanley"
+date: 2019-06-13
+tags: [clunet, articles, word count, states]
+description: "What patterns of state reference do we see in article text?"
+---
+
+
+
+<p>This chart counts references to selected states the standalone articles in Clunet. The pattern seems to differ from the <a href="https://ilcorpus.netlify.com/posts/jurisprudence/">pattern in jurisprudence</a>. Egypt is less prominent, while the Ottomans and Russia are more prominent.</p>
+<p><img src="/posts/states-in-articles_files/figure-html/states-in-articles-1.png" width="672" /></p>
+<div id="underlying-code" class="section level2">
+<h2>Underlying code</h2>
+<pre class="r"><code>library(xml2)
+library(tidyverse)
+library(tokenizers)
+library(ggplot2)
+
+#load folder of files
+clunet_files &lt;- dir(&quot;~/GitHub/ilcorpus/journals/clunet/clunet-issues&quot;, full.names = TRUE)
+
+# this function extracts text and metadata
+extract_data &lt;- function(file){xml_find_all(xml_child(read_xml(file), 2), &quot;.//d1:div&quot;) %&gt;% 
+    lapply(function(x) {
+      list(
+        type = xml_attr(x, &quot;type&quot;),
+        feature = xml_attr(x, &quot;feature&quot;),
+        text = xml_text(x)
+      )
+    }) %&gt;% bind_rows()
+}
+
+# run on folder of files
+clunet_words_list &lt;- lapply(clunet_files, extract_data)
+
+# unnest to make one big tibble
+unnested_clunet_words &lt;-tibble(index = 1:length(clunet_words_list), value = clunet_words_list) %&gt;% unnest()
+
+# fetch metadata to join table with dates
+clunet_metadata &lt;- read_csv(&quot;~/GitHub/ilcorpus/journals/clunet/clunet-summary.csv&quot;)
+clunet_words &lt;- clunet_metadata %&gt;%
+  inner_join(unnested_clunet_words)  %&gt;%
+  select(year, type, feature, text)
+
+clunet_words
+
+# articles only
+clunet_article_words &lt;- clunet_words %&gt;%
+  filter(type == &quot;article&quot;) %&gt;%
+  mutate(words = tokenize_words(text)) %&gt;% 
+  select(-text) %&gt;% 
+  select(-feature) %&gt;% 
+  select(-type) %&gt;% 
+  unnest() 
+
+clunet_article_words
+
+# single count per year
+unique_clunet_article_words &lt;- clunet_article_words %&gt;% 
+  add_count(words, year, sort = TRUE) %&gt;% 
+  distinct()
+
+unique_clunet_article_words
+
+# state by state breakdown
+egypt &lt;- unique_clunet_article_words %&gt;% 
+  filter(grepl(&quot;.gypt.+&quot;, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = sum(n)) %&gt;% 
+  add_column(state = &quot;Egypt&quot;)
+belgium &lt;- unique_clunet_article_words %&gt;% 
+  filter(grepl(&quot;belg.+&quot;, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = sum(n)) %&gt;% 
+  add_column(state = &quot;Belgium&quot;)
+switzerland &lt;- unique_clunet_article_words %&gt;% 
+  filter(grepl(&quot;suis.+&quot;, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = sum(n)) %&gt;% 
+  add_column(state = &quot;Switzerland&quot;)
+china &lt;- unique_clunet_article_words %&gt;% 
+  filter(grepl(&quot;chin.+&quot;, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = sum(n)) %&gt;% 
+  add_column(state = &quot;China&quot;)
+japan &lt;- unique_clunet_article_words %&gt;% 
+  filter(grepl(&quot;japon.+&quot;, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = sum(n)) %&gt;% 
+  add_column(state = &quot;Japan&quot;)
+turkey &lt;- unique_clunet_article_words %&gt;% 
+  filter(grepl(&quot;turq.+&quot;, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = sum(n)) %&gt;% 
+  add_column(state = &quot;Turkey&quot;)
+greece &lt;- unique_clunet_article_words %&gt;% 
+  filter(grepl(&quot;grec.*&quot;, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = sum(n)) %&gt;% 
+  add_column(state = &quot;Greece&quot;)
+ottoman &lt;- unique_clunet_article_words %&gt;% 
+  filter(grepl(&quot;otto.+&quot;, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = sum(n)) %&gt;% 
+  add_column(state = &quot;Ottoman&quot;)
+russia &lt;- unique_clunet_article_words %&gt;% 
+  filter(grepl(&quot;russ.+&quot;, words)) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(count = sum(n)) %&gt;% 
+  add_column(state = &quot;Russia&quot;)
+  
+# make tibble
+states_count &lt;- full_join(belgium, switzerland)
+states_count &lt;- full_join(egypt, states_count)
+states_count &lt;- full_join(china, states_count)
+states_count &lt;- full_join(japan, states_count)
+states_count &lt;- full_join(turkey, states_count)
+states_count &lt;- full_join(greece, states_count)
+states_count &lt;- full_join(ottoman, states_count)
+states_count &lt;- full_join(russia, states_count)
+states_count
+
+# make plot
+p &lt;- ggplot(data = states_count, mapping = aes(x = year, y = count, color = state))
+p + geom_point() + geom_smooth() + 
+  facet_wrap(~state) +
+  scale_y_continuous() +
+  theme(legend.position=&quot;none&quot;) +
+  labs(x = &quot;Year&quot;, 
+       title = &quot;Selected state names in Clunet articles, 1874-1939&quot;, 
+       subtitle = &quot;State names appear as nouns or adjectives in article body text&quot;,
+       y = &quot;Words per Year&quot;,
+       caption = &quot;Will Hanley, ILCorpus&quot;)</code></pre>
+</div>

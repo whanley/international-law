@@ -6,10 +6,20 @@
     <description>Recent content in word count on International Law Corpus</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 13 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/word-count/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>States in Clunet articles</title>
+      <link>/posts/states-in-articles/</link>
+      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/states-in-articles/</guid>
+      <description>This chart counts references to selected states the standalone articles in Clunet. The pattern seems to differ from the pattern in jurisprudence. Egypt is less prominent, while the Ottomans and Russia are more prominent.
+Underlying code library(xml2) library(tidyverse) library(tokenizers) library(ggplot2) #load folder of files clunet_files &amp;lt;- dir(&amp;quot;~/GitHub/ilcorpus/journals/clunet/clunet-issues&amp;quot;, full.names = TRUE) # this function extracts text and metadata extract_data &amp;lt;- function(file){xml_find_all(xml_child(read_xml(file), 2), &amp;quot;.//d1:div&amp;quot;) %&amp;gt;% lapply(function(x) { list( type = xml_attr(x, &amp;quot;type&amp;quot;), feature = xml_attr(x, &amp;quot;feature&amp;quot;), text = xml_text(x) ) }) %&amp;gt;% bind_rows() } # run on folder of files clunet_words_list &amp;lt;- lapply(clunet_files, extract_data) # unnest to make one big tibble unnested_clunet_words &amp;lt;-tibble(index = 1:length(clunet_words_list), value = clunet_words_list) %&amp;gt;% unnest() # fetch metadata to join table with dates clunet_metadata &amp;lt;- read_csv(&amp;quot;~/GitHub/ilcorpus/journals/clunet/clunet-summary.</description>
+    </item>
     
     <item>
       <title>Counting states in jurisprudence reports</title>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>states on International Law Corpus</title>
-    <link>/tags/states/</link>
-    <description>Recent content in states on International Law Corpus</description>
+    <title>articles on International Law Corpus</title>
+    <link>/tags/articles/</link>
+    <description>Recent content in articles on International Law Corpus</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 13 Jun 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/states/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/articles/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -19,17 +19,6 @@
       <guid>/posts/states-in-articles/</guid>
       <description>This chart counts references to selected states the standalone articles in Clunet. The pattern seems to differ from the pattern in jurisprudence. Egypt is less prominent, while the Ottomans and Russia are more prominent.
 Underlying code library(xml2) library(tidyverse) library(tokenizers) library(ggplot2) #load folder of files clunet_files &amp;lt;- dir(&amp;quot;~/GitHub/ilcorpus/journals/clunet/clunet-issues&amp;quot;, full.names = TRUE) # this function extracts text and metadata extract_data &amp;lt;- function(file){xml_find_all(xml_child(read_xml(file), 2), &amp;quot;.//d1:div&amp;quot;) %&amp;gt;% lapply(function(x) { list( type = xml_attr(x, &amp;quot;type&amp;quot;), feature = xml_attr(x, &amp;quot;feature&amp;quot;), text = xml_text(x) ) }) %&amp;gt;% bind_rows() } # run on folder of files clunet_words_list &amp;lt;- lapply(clunet_files, extract_data) # unnest to make one big tibble unnested_clunet_words &amp;lt;-tibble(index = 1:length(clunet_words_list), value = clunet_words_list) %&amp;gt;% unnest() # fetch metadata to join table with dates clunet_metadata &amp;lt;- read_csv(&amp;quot;~/GitHub/ilcorpus/journals/clunet/clunet-summary.</description>
-    </item>
-    
-    <item>
-      <title>Counting states in jurisprudence reports</title>
-      <link>/posts/jurisprudence/</link>
-      <pubDate>Thu, 06 Jun 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/jurisprudence/</guid>
-      <description>The “Jurisprudence” section of Clunet contains thousands of “bulletins” reporting decisions. The section is subdivided by state. This scatterplot captures the number of bulletins for each state and their average length.
-Number of bulletins is one proxy for the notability of a state. Of course, not all of these states were present throughout the sixty-five year period. I’ll break out time series in future graphs.
-Length of bulletin is one proxy for the depth of engagement with jurisprudence.</description>
     </item>
     
   </channel>
